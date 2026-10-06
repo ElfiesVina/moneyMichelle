@@ -209,3 +209,20 @@ body[data-active-skin="aura-sasa-yura-normaly-skin"] .collab-progress-fill { bac
 .dark .rarity-ssr { background:#2a1d0b; color:#f2bd70; }
 .dark .rarity-sss { background:#2a111b; color:#f5a0bd; }
 .dark .rarity-mythic { background:#17142f; color:#bdb4ff; }
+
+/* FREE COLLAB badges */
+.free-collab-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:.25rem;
+  padding:4px 8px;
+  border-radius:9999px;
+  background:#77758a;
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+  line-height:1;
+  box-shadow:0 4px 12px rgba(119,117,138,.18);
+}
+.dark .free-collab-badge { background:#9a9aaf; color:#111827; }

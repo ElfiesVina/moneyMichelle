@@ -3,7 +3,8 @@
 // Saat backend/Supabase dipakai, modul ini dapat diganti API.
 // ============================================================
 const EVENT_STORE_KEY = 'money_michelle_event_store_v1';
-let eventStore = { version:1, activeEventId:null, events:[] };
+const EVENT_CONFIG_URL = 'data/events.json';
+let eventStore = { version:2, activeEventId:null, events:[], localEvents:[] };
 
 const HUJAN_METEOR_EVENT_ID = 'hujan-meteor-2026';
 const AURA_SASA_YURA_CHARACTER_ID = 'aura-sasa-yura-normaly';
@@ -48,28 +49,44 @@ function ensureDefaultEventCatalog() {
 }
 
 
-function loadEventStore() {
+async function loadEventStore() {
+  // data/events.json adalah source of truth developer untuk event yang ikut deploy.
+  // localStorage hanya menyimpan event lokal yang dibuat dari Developer Console.
+  let remoteCatalog = null;
+  try {
+    const response = await fetch(`${EVENT_CONFIG_URL}?v=${Date.now()}`, { cache: 'no-store' });
+    if (response.ok) remoteCatalog = await response.json();
+  } catch (e) {
+    console.warn('Gagal memuat katalog event dari data/events.json; memakai fallback/local.', e);
+  }
+
   try {
     const raw = localStorage.getItem(EVENT_STORE_KEY);
-    if (raw) eventStore = { ...eventStore, ...JSON.parse(raw) };
-  } catch (e) { console.warn('Gagal memuat event store', e); }
+    if (raw) {
+      const saved = JSON.parse(raw);
+      eventStore = { ...eventStore, ...saved };
+    }
+  } catch (e) { console.warn('Gagal memuat event store lokal', e); }
 
-  if (!Array.isArray(eventStore.events)) eventStore.events = [];
+  if (!Array.isArray(eventStore.localEvents)) eventStore.localEvents = [];
+  if (remoteCatalog && Array.isArray(remoteCatalog.events)) {
+    eventStore.events = remoteCatalog.events.map(e => ({ ...e }));
+    eventStore.activeEventId = remoteCatalog.activeEventId || null;
+  } else if (!Array.isArray(eventStore.events)) {
+    eventStore.events = [];
+  }
+
+  // Event dari Developer Console tetap tersedia sebagai event lokal tambahan.
+  const localById = new Map(eventStore.localEvents.map(e => [String(e.id), e]));
+  eventStore.events = eventStore.events.map(e => localById.has(String(e.id)) ? localById.get(String(e.id)) : e);
+  const remoteIds = new Set(eventStore.events.map(e => String(e.id)));
+  eventStore.localEvents.forEach(localEvent => {
+    if (!remoteIds.has(String(localEvent.id))) eventStore.events.push(localEvent);
+  });
+
   ensureDefaultEventCatalog();
   saveEventStore();
-
-  // Migrasi satu kali dari versi lama yang menyimpan katalog event di state user.
-  const legacy = state?.collab?.eventCatalog;
-  if (eventStore.events.length === 0 && Array.isArray(legacy) && legacy.length) {
-    eventStore.events = legacy;
-    eventStore.activeEventId = state.collab.activeEventId || legacy.find(e => e.status === 'active')?.id || null;
-    delete state.collab.eventCatalog;
-    delete state.collab.activeEventId;
-    saveEventStore();
-    saveStateLocalOnly();
-  }
 }
-
 function saveEventStore() {
   try { localStorage.setItem(EVENT_STORE_KEY, JSON.stringify(eventStore)); }
   catch (e) { console.warn('Gagal menyimpan event store', e); }

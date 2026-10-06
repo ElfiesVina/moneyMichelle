@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "activeEventId": "hujan-meteor-2026",
+  "events": [
+    {
+      "id": "hujan-meteor-2026",
+      "label": "Hujan Meteor × Money Michelle",
+      "title": "Hujan Meteor — School Romance",
+      "description": "FREE COLLAB pertama Money Michelle. Dapatkan Aura Sasa Yura sebagai Character dan Skin Normaly gratis.",
+      "startAt": "2026-10-01T00:00:00.000Z",
+      "endAt": "2027-12-31T23:59:59.000Z",
+      "status": "active",
+      "starterReward": true,
+      "missions": [
+        {
+          "id": "hm-mission-1",
+          "title": "Catat 3 transaksi",
+          "description": "Tambahkan tiga transaksi valid untuk progres event.",
+          "metric": "count",
+          "target": 3,
+          "match": {}
+        },
+        {
+          "id": "hm-mission-2",
+          "title": "Transaksi minimal Rp10.000",
+          "description": "Tambahkan satu transaksi dengan nominal minimal Rp10.000.",
+          "metric": "count",
+          "target": 1,
+          "match": { "minAmount": 10000 }
+        }
+      ],
+      "rewards": [
+        {
+          "id": "reward-aura-sasa-yura-normaly-character",
+          "name": "Aura Sasa Yura — Normaly",
+          "description": "Character gratis dari FREE COLLAB Hujan Meteor × Money Michelle.",
+          "type": "character",
+          "icon": "✨",
+          "rarity": "normaly",
+          "starter": true,
+          "item": {
+            "id": "aura-sasa-yura-normaly",
+            "name": "Aura Sasa Yura",
+            "description": "Character Normaly dari Hujan Meteor × Money Michelle.",
+            "icon": "✨",
+            "image": "assets/collab/hujan-meteor/aura-sasa-yura/normaly-card.png",
+            "rarity": "normaly",
+            "event": "hujan-meteor-2026"
+          }
+        },
+        {
+          "id": "reward-aura-sasa-yura-normaly-skin",
+          "name": "Aura Sasa Yura — Normaly Skin",
+          "description": "Skin gratis dari FREE COLLAB dengan tema Silver Lavender × Dusty Blue × Warm White.",
+          "type": "skin",
+          "icon": "🎨",
+          "rarity": "normaly",
+          "starter": true,
+          "item": {
+            "id": "aura-sasa-yura-normaly-skin",
+            "name": "Aura Sasa Yura",
+            "description": "Skin Normaly: Silver Lavender × Dusty Blue × Warm White.",
+            "icon": "🎨",
+            "image": "assets/collab/hujan-meteor/aura-sasa-yura/normaly-card.png",
+            "rarity": "normaly",
+            "event": "hujan-meteor-2026",
+            "primaryColor": "#77758A",
+            "secondaryColor": "#9A9AAF",
+            "accentColor": "#B8AFC8",
+            "backgroundColor": "#E9E8ED",
+            "cardColor": "#F5F3F5",
+            "textColor": "#34343D"
+          }
+        }
+      ]
+    }
+  ]
+}

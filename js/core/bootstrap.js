@@ -1,10 +1,10 @@
 // ============================================================
 // APP BOOTSTRAP — satu-satunya tempat startup dipanggil.
 // ============================================================
-function initApp() {
+async function initApp() {
   loadState();
   normalizeState();
-  loadEventStore();
+  await loadEventStore();
   initSettings();
   initPrefs();
   renderAll();

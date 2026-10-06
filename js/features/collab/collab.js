@@ -80,7 +80,7 @@ function renderCollabHome() {
     <div class="flex items-stretch gap-3 min-h-[8rem]">
       <div class="w-28 shrink-0 flex items-end justify-center overflow-hidden bg-white border border-slate-100/60 collab-character-art" style="border-radius:1.25rem">${visualHtml}</div>
       <div class="min-w-0 flex-1 flex flex-col justify-center py-1">
-        <p class="text-[11px] font-medium text-indigo-500">${escapeHtml(event.label || t('collab_event_label'))}</p>
+        <div class="flex flex-wrap items-center gap-1.5"><span class="free-collab-badge">FREE COLLAB</span><p class="text-[11px] font-medium text-indigo-500">${escapeHtml(event.label || t('collab_event_label'))}</p></div>
         <p class="text-sm font-semibold text-slate-800 mt-1 leading-snug">${escapeHtml(event.title || t('collab_title'))}</p>
         <p class="text-xs text-slate-500 mt-1 leading-snug">${escapeHtml(event.description || t('collab_event_hint'))}</p>
         <div class="mt-2.5"><div class="flex items-center justify-between text-[10px] text-slate-500 mb-1"><span>${escapeHtml(t('collab_progress'))}</span><span>${progress.done}/${progress.total}</span></div><div class="collab-progress-track"><div class="collab-progress-fill" style="width:${progress.percent}%"></div></div></div>
@@ -148,8 +148,9 @@ function maybeShowStarterIntro(){
 }
 function handleStarterIntroCTA(){
   const c=getCollabState(); c.starter.introSeen=true; saveStateLocalOnly(); closeStarterIntro();
-  if(!state.user){ window.__pendingCollectionOpen=true; openCollectionLoginGate(); return; }
-  switchTab('koleksi');
+  // CTA modal event selalu membuka halaman Event, bukan Akun/Koleksi.
+  // Login hanya diminta ketika pengguna benar-benar menekan tombol klaim.
+  switchTab('collab');
 }
 function openCollectionLoginGate(){
   const modal=document.getElementById('modal-collection-login'); if(!modal){ openAuth('signin'); return; }
@@ -194,7 +195,7 @@ function renderRarityGroups(items, isCharacters){
     return `<section class="rarity-section"><div class="rarity-heading"><span class="rarity-pill ${getRarityClass(r)}">${getRarityLabel(r)}</span><span class="text-[10px] text-slate-400">${arr.length} item</span></div><div class="grid grid-cols-1 gap-3">${arr.map(item=>{
       const active=equipped?.id&&item.id===equipped.id;
       const ownedIndex=owned.findIndex(x=>String(x.id||'')===String(item.id||''));
-      const starterBadge=(!getCollabState().starter?.cardSeen && item._starter && !item._owned)?`<span class="free-badge">FREE</span>`:'';
+      const starterBadge=item._starter?`<span class="free-badge">FREE COLLAB</span>`:'';
       const status=item._locked?(item._starter?'Gratis untuk akun yang sudah Sign In':'Belum Dimiliki'):'Dimiliki';
       const action=item._locked?(item._starter?(state.user?'Ambil Gratis':'Sign In'):'Buka Event'):(active?'✓ Digunakan':(isCharacters?'Tampilkan':'Gunakan'));
       const globalIndex=items.indexOf(item); const onclick=item._locked?(item._starter?'claimStarterFromCollection()':'switchTab(\'collab\')'):`openCollectionItem('${isCharacters?'characters':'skins'}',${globalIndex})`;
@@ -214,9 +215,6 @@ function renderCollectionPage() {
   document.getElementById('collection-section-count').textContent=`${items.length} item`;
   equippedEl.innerHTML=`<section class="bg-white rounded-3xl border border-white shadow-[0_8px_30px_rgba(37,99,235,0.08)] p-4"><div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center overflow-hidden shrink-0">${equipped?.image?`<img src="${escapeHtml(equipped.image)}" alt="" class="w-full h-full object-cover">`:`<span class="text-2xl">${escapeHtml(equipped?.icon||(isCharacters?'👤':'🎨'))}</span>`}</div><div class="min-w-0 flex-1"><p class="text-[11px] uppercase tracking-wide font-semibold text-indigo-500">${escapeHtml(t(isCharacters?'collection_equipped_character':'collection_equipped_skin'))}</p><p class="font-semibold text-slate-900 truncate mt-0.5">${escapeHtml(equipped?.name||t('collection_default'))}</p><p class="text-xs text-slate-500 mt-0.5">${escapeHtml(isCharacters?'Tampil di card Beranda':'Mengubah tema visual aplikasi')}</p></div></div></section>`;
   listEl.innerHTML=renderRarityGroups(items,isCharacters);
-  if (!c.starter.cardSeen && !c.starter.claimed) {
-    setTimeout(() => { const cc=getCollabState(); if (!cc.starter.cardSeen) { cc.starter.cardSeen=true; saveStateLocalOnly(); renderCollectionPage(); } }, 1400);
-  }
 }
 
 function renderCollabPage() {

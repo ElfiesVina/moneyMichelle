@@ -3,7 +3,12 @@
 // Endpoint yang dipanggil: POST {url}/signin dan POST {url}/signup, body JSON {name?, email, password}.
 // Balasan sukses yang diharapkan: { name, email }. Kata sandi TIDAK pernah disimpan di aplikasi.
 // Backend auth + cloud sync (jalankan: cd backend && npm start)
-const AUTH_CONFIG = { url: 'http://localhost:3847' };
+const AUTH_CONFIG = { url: '' };
+function getAuthBaseUrl() {
+  // Same-origin Vercel Functions. Developer can override for a separate backend with localStorage.
+  try { return (localStorage.getItem('money_michelle_auth_api_url') || AUTH_CONFIG.url || '/api').replace(/\/$/, ''); }
+  catch { return (AUTH_CONFIG.url || '/api').replace(/\/$/, ''); }
+}
 const TOKEN_KEY = 'ai_keuangan_token_v1';
 let authMode = 'signin', pfAvatar = '';
 function getToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } }
@@ -116,13 +121,13 @@ async function forgotPassword() {
     msg.textContent = t('forgot_need_email') || 'Masukkan email dulu, lalu ketuk Lupa kata sandi.';
     return;
   }
-  if (!AUTH_CONFIG.url) {
+  if (!getAuthBaseUrl()) {
     msg.textContent = t('forgot_sent') || 'Jika email terdaftar, tautan reset akan dikirim (fitur server).';
     return;
   }
   try {
     msg.textContent = 'Mengirim...';
-    const r = await fetch(AUTH_CONFIG.url.replace(/\/$/, '') + '/forgot', {
+    const r = await fetch(getAuthBaseUrl() + '/forgot', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     });
@@ -134,20 +139,24 @@ async function forgotPassword() {
   }
 }
 async function authRequest(mode, payload) {
-  if (!AUTH_CONFIG.url) throw new Error('Login online belum tersambung ke server. Data kamu tetap aman di perangkat ini.');
-  const r = await fetch(AUTH_CONFIG.url.replace(/\/$/, '') + '/' + mode, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.message || 'Gagal, coba lagi.');
-  return j;
+  try {
+    const r = await fetch(getAuthBaseUrl() + '/' + mode, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.message || 'Gagal, coba lagi.');
+    return j;
+  } catch (e) {
+    if (e instanceof TypeError) throw new Error('Tidak dapat menghubungi server akun. Pastikan deployment Vercel sudah terbaru dan folder api ikut ter-push ke GitHub.');
+    throw e;
+  }
 }
 async function cloudFetch(path, options = {}) {
   const token = getToken();
   if (!token) throw new Error('Belum login.');
-  const r = await fetch(AUTH_CONFIG.url.replace(/\/$/, '') + path, {
+  const r = await fetch(getAuthBaseUrl() + path, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -160,7 +169,7 @@ async function cloudFetch(path, options = {}) {
   return j;
 }
 async function pullCloudData() {
-  if (!getToken() || !AUTH_CONFIG.url) return;
+  if (!getToken()) return;
   try {
     const data = await cloudFetch('/data');
     const hasCloud = (data.wallets && data.wallets.length) || (data.transactions && data.transactions.length);
@@ -187,12 +196,12 @@ async function pullCloudData() {
 }
 let _syncTimer = null;
 function pushCloudDataDebounced() {
-  if (!getToken() || !AUTH_CONFIG.url) return;
+  if (!getToken()) return;
   clearTimeout(_syncTimer);
   _syncTimer = setTimeout(() => { pushCloudData().catch(e => console.warn(e)); }, 800);
 }
 async function pushCloudData() {
-  if (!getToken() || !AUTH_CONFIG.url) return;
+  if (!getToken()) return;
   const payload = {
     wallets: state.wallets,
     categories: state.categories,

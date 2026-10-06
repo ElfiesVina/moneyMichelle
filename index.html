@@ -6,11 +6,6 @@
   <title>Money Michelle</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <div id="modal-collection-detail" class="fixed inset-0 bg-black/40 z-[75] hidden items-end sm:items-center justify-center sm:p-4" onclick="if(event.target===this)hideModal('modal-collection-detail')">
-    <div class="w-full sm:max-w-md max-h-[90vh] overflow-y-auto bg-slate-50 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl">
-      <div id="collection-detail-body"></div>
-    </div>
-  </div>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -29,21 +24,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/app.css">
 </head>
+<body class="bg-gradient-to-b from-[#e6efff] to-[#f7faff] min-h-screen text-slate-800">
+<div id="modal-collection-detail" class="fixed inset-0 bg-black/40 z-[75] hidden items-end sm:items-center justify-center sm:p-4" onclick="if(event.target===this)hideModal('modal-collection-detail')">
+    <div class="w-full sm:max-w-md max-h-[90vh] overflow-y-auto bg-slate-50 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl">
+      <div id="collection-detail-body"></div>
+    </div>
+  </div>
+
   <!-- Modal: Starter Free Skin & Character -->
   <div id="modal-starter-intro" class="fixed inset-0 bg-black/50 z-[90] hidden items-end sm:items-center justify-center sm:p-4" onclick="if(event.target===this)closeStarterIntro()">
     <div class="modal-card starter-intro-card bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
       <div class="relative">
         <img src="assets/collab/hujan-meteor/aura-sasa-yura/normaly-card.png" alt="Aura Sasa Yura Normaly" class="w-full aspect-[3/4] object-cover">
-        <div class="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/85 via-black/35 to-transparent text-white pt-20">
-          <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-white/15 border border-white/25 text-[10px] font-bold tracking-[.16em]">FREE STARTER</span>
+        <button type="button" onclick="closeStarterIntro()" aria-label="Tutup" class="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/45 text-white backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-black/60"><i class="fas fa-xmark"></i></button>
+        <div class="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white pt-20">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-white/15 border border-white/25 text-[10px] font-bold tracking-[.16em]">FREE COLLAB</span>
           <h3 class="text-2xl font-bold mt-2">Aura Sasa Yura</h3>
           <p class="text-xs text-white/75 mt-0.5">Hujan Meteor × Money Michelle · NORMALY</p>
         </div>
       </div>
       <div class="p-5">
-        <p class="text-sm font-semibold text-slate-800">Free Skin &amp; Character</p>
-        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Dapatkan Aura Sasa Yura Normaly sebagai Character dan Skin gratis untuk memulai koleksimu.</p>
-        <button type="button" onclick="handleStarterIntroCTA()" class="w-full mt-4 py-3.5 rounded-2xl bg-indigo-600 text-white text-sm font-bold">Dapatkan Sekarang <i class="fas fa-arrow-right ml-1"></i></button>
+        <p class="text-sm font-semibold text-slate-800">Character &amp; Skin Gratis</p>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">FREE COLLAB pertama Money Michelle. Buka halaman event untuk melihat misi dan mengambil Aura Sasa Yura sebagai Character dan Skin Normaly.</p>
+        <button type="button" onclick="handleStarterIntroCTA()" class="w-full mt-4 py-3.5 rounded-2xl bg-indigo-600 text-white text-sm font-bold">Lihat Event <i class="fas fa-arrow-right ml-1"></i></button>
         <button type="button" onclick="closeStarterIntro()" class="w-full mt-2 py-2.5 rounded-2xl text-xs text-slate-400">Nanti</button>
       </div>
     </div>
@@ -62,8 +65,6 @@
     </div>
   </div>
 
-
-<body class="bg-gradient-to-b from-[#e6efff] to-[#f7faff] min-h-screen text-slate-800">
 
 <div id="app" class="max-w-md mx-auto min-h-screen relative pb-28" style="padding-top:env(safe-area-inset-top)">
 
@@ -178,7 +179,7 @@
             <button type="button" onclick="switchTab('transaksi')" class="text-xs font-medium text-indigo-600 hover:text-indigo-700" data-i18n="see_all">Lihat semua</button>
           </div>
           <div class="flex items-center gap-2">
-            <select id="filter-type" onchange="renderTransactions()" class="filter-chip filter-chip-fixed appearance-none pr-7 bg-no-repeat" style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2364748b%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');background-position:right 8px center;background-size:12px">
+            <select id="filter-type" onchange="renderTransactions()" class="filter-chip filter-chip-fixed">
               <option value="all" data-i18n="filter_all">Semua</option>
               <option value="expense" data-i18n="filter_expense">Pengeluaran</option>
               <option value="income" data-i18n="filter_income">Pemasukan</option>
@@ -207,7 +208,7 @@
 
     <section class="collection-hero rounded-[1.75rem] p-5">
       <div class="relative z-10 max-w-[75%]">
-        <p class="text-[11px] font-semibold uppercase tracking-[.16em] text-white/75">Collection</p>
+        <div class="flex flex-wrap items-center gap-2"><p class="text-[11px] font-semibold uppercase tracking-[.16em] text-white/75">Collection</p><span class="inline-flex items-center px-2 py-1 rounded-full bg-white/15 border border-white/25 text-[9px] font-extrabold tracking-[.12em]">FREE COLLAB</span></div>
         <h3 class="text-2xl font-bold mt-1">Skin &amp; Karakter</h3>
         <p class="text-sm text-white/85 mt-1.5 leading-relaxed">Pilih skin untuk mengubah tema aplikasi dan karakter untuk card utama Beranda.</p><p class="text-[10px] text-white/65 mt-2">Koleksi dikelompokkan berdasarkan rarity: NORMALY · RARE · SR · SSR · SSS · MYTHIC</p>
       </div>

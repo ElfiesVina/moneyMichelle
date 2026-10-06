@@ -73,3 +73,27 @@ Core state + storage
 ```
 
 `transaction-service.js` adalah satu-satunya jalur pembuatan/penghapusan transaksi. Jangan mengubah `wallet.balance` langsung dari feature lain.
+
+## Mengatur event tanpa mengubah JavaScript
+
+Untuk event yang akan ikut deploy ke semua pengguna, edit file:
+
+`data/events.json`
+
+Di sana developer dapat mengatur:
+- `activeEventId`
+- `id`, `label`, `title`, `description`
+- `startAt`, `endAt`, `status`
+- `missions[]` (target, metric, match)
+- `rewards[]` (character/skin, rarity, image, starter)
+
+Asset gambar event berada di:
+`assets/collab/<nama-event>/<nama-item>/...`
+
+Setelah mengubah `data/events.json`, commit ke GitHub dan Vercel akan membuat deployment baru. Tidak perlu meminta AI mengubah kode untuk perubahan data event biasa.
+
+Developer Console di dalam aplikasi tetap berguna untuk membuat draft/test event secara lokal. Perubahan dari console disimpan di localStorage perangkat tersebut; perubahan global/deployed tetap dilakukan melalui `data/events.json` dan Git.
+
+## Auth Vercel
+
+Frontend memakai same-origin `/api/signup`, `/api/signin`, dan `/api/data`. Lihat `VERCEL-AUTH-SETUP.md` untuk konfigurasi Supabase dan Environment Variables.
