@@ -1,0 +1,17 @@
+{
+  "id": "collab-example-2026",
+  "label": "Special Event",
+  "title": "Contoh Collaboration",
+  "description": "Selesaikan misi untuk mendapatkan reward.",
+  "startAt": "2026-10-10T00:00:00.000Z",
+  "endAt": "2026-11-10T23:59:59.000Z",
+  "status": "draft",
+  "missions": [
+    {"id":"mission-1","title":"Catat 3 transaksi","description":"Tambahkan tiga transaksi valid.","metric":"count","target":3,"match":{}},
+    {"id":"mission-2","title":"Selesaikan transaksi minimal Rp10.000","description":"Satu transaksi dengan nominal minimal Rp10.000.","metric":"count","target":1,"match":{"minAmount":10000}}
+  ],
+  "rewards": [
+    {"id":"reward-character-example","name":"Character Example","description":"Karakter untuk card Beranda.","type":"character","icon":"✨","item":{"id":"character-example","name":"Character Example","description":"Karakter untuk card Beranda.","icon":"✨","image":""}},
+    {"id":"reward-skin-example","name":"Skin Example","description":"Tema visual aplikasi.","type":"skin","icon":"🎨","item":{"id":"skin-example","name":"Skin Example","description":"Tema visual aplikasi.","icon":"🎨","image":"","primaryColor":"#2563eb","secondaryColor":"#0ea5e9","accentColor":"#f59e0b"}}
+  ]
+}
