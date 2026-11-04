@@ -1,0 +1,12 @@
+{
+  "name": "money-michelle-native",
+  "version": "1.0.0-mochell-bridge",
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/camera": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0"
+  }
+}
