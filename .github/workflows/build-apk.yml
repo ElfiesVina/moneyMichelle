@@ -9,24 +9,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+      
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      
+          cache: 'gradle'
+
       - name: Install dependencies
         run: npm install
 
-      - name: Prepare www folder (fix webDir)
+      - name: Prepare www folder
         run: |
           mkdir -p www
-          cp index.html www/ || true
-          cp -r css js data assets lib www/ 2>/dev/null || true
-          cp -r api www/ 2>/dev/null || true
-          ls www
+          cp index.html www/
+          cp -r css js data assets lib api www/ 2>/dev/null || true
 
       - name: Add Android platform
         run: npx cap add android
@@ -37,8 +39,10 @@ jobs:
       - name: Build APK
         run: |
           chmod +x android/gradlew
-          cd android && ./gradlew assembleDebug
-          mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/money-michelle.apk
+          cd android && ./gradlew assembleDebug --no-daemon -x test
+
+      - name: Rename APK
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/money-michelle.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
