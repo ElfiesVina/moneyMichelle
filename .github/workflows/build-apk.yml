@@ -16,11 +16,29 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - run: npm install
-      - run: npx cap add android
-      - run: npx cap sync android
-      - run: cd android && ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prepare www folder (fix webDir)
+        run: |
+          mkdir -p www
+          cp index.html www/ || true
+          cp -r css js data assets lib www/ 2>/dev/null || true
+          cp -r api www/ 2>/dev/null || true
+          ls www
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync to Android
+        run: npx cap sync android
+
+      - name: Build APK
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: MoneyMichelle-APK
           path: android/app/build/outputs/apk/debug/money-michelle.apk
